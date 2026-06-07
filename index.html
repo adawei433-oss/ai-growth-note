@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成长手记：把 AI 用进真实工作</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#F57603;--primary-light:#FFAA44;
+  --primary-border:rgba(245,118,3,0.35);
+  --bg:#111008;--surface:rgba(245,118,3,0.06);--surface-md:rgba(245,118,3,0.11);
+  --border:rgba(245,118,3,0.18);
+  --text:#FFFFFF;--text-2:rgba(255,255,255,0.72);--text-3:rgba(255,255,255,0.42);
+  --r:8px;--rl:12px;
+}
+html,body{width:100%;height:100%;overflow:hidden;
+  font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);}
+
+/* ── 上下滑动容器 ── */
+.deck{
+  width:100%;height:100vh;
+  overflow-y:scroll;overflow-x:hidden;
+  scroll-snap-type:y mandatory;
+  scroll-behavior:smooth;
+  /* 隐藏滚动条 */
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.deck::-webkit-scrollbar{display:none;}
+
+/* 每页占满视口，垂直 snap */
+.slide{
+  width:100%;height:100vh;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:4vh 6vw;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,#111008 0%,#1c1505 55%,#0e0d06 100%);
+  /* 入场动画 */
+  opacity:1;
+}
+.slide::before{content:'';position:absolute;top:-20%;left:-8%;width:60%;height:80%;pointer-events:none;background:radial-gradient(ellipse,rgba(245,118,3,.1) 0%,transparent 68%);z-index:0;}
+.slide::after{content:'';position:absolute;bottom:-18%;right:-5%;width:48%;height:65%;pointer-events:none;background:radial-gradient(ellipse,rgba(255,170,68,.06) 0%,transparent 68%);z-index:0;}
+
+/* 内容需要可滚动时允许 */
+.slide-inner{
+  position:relative;z-index:1;
+  width:100%;max-width:1260px;
+  max-height:92vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(245,118,3,.3) transparent;
+  padding-right:4px;
+}
+.slide-inner::-webkit-scrollbar{width:4px;}
+.slide-inner::-webkit-scrollbar-track{background:transparent;}
+.slide-inner::-webkit-scrollbar-thumb{background:rgba(245,118,3,.3);border-radius:2px;}
+
+/* labels */
+.eyebrow,.label{font-size:clamp(10px,.88vw,13px);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--primary);margin-bottom:.55em;}
+.bar{display:block;height:3px;width:52px;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:2px;margin:1.1em 0 1.5em;}
+
+/* cover */
+.slide.cover{align-items:flex-start;}
+.cover-h1{font-size:clamp(32px,5vw,72px);font-weight:900;line-height:1.06;letter-spacing:-.02em;margin-bottom:.1em;}
+.cover-h1 span{color:var(--primary);}
+.cover-sub{font-size:clamp(12px,1.15vw,17px);color:var(--text-2);max-width:640px;line-height:1.75;margin-bottom:1.8em;}
+.cover-sub strong{color:var(--primary-light);}
+.tags{display:flex;gap:9px;flex-wrap:wrap;}
+.tag{padding:5px 14px;border-radius:18px;border:1px solid var(--primary-border);font-size:clamp(10px,.85vw,12px);color:var(--primary);background:rgba(245,118,3,.08);}
+.sharer{display:inline-flex;align-items:center;gap:8px;margin-top:1.4em;padding:7px 18px;border-radius:20px;background:rgba(245,118,3,.1);border:1px solid var(--primary-border);}
+.sharer span{font-size:clamp(11px,.9vw,14px);color:var(--text-2);}
+.sharer strong{color:var(--primary-light);font-size:clamp(12px,.95vw,15px);}
+
+/* section */
+.slide.sec{align-items:flex-start;justify-content:flex-end;padding-bottom:9vh;}
+.sec-bg-num{position:absolute;right:5vw;top:50%;transform:translateY(-58%);font-size:clamp(88px,15vw,210px);font-weight:900;color:rgba(245,118,3,.09);line-height:1;pointer-events:none;user-select:none;z-index:1;}
+.sec-h{font-size:clamp(26px,3.8vw,56px);font-weight:800;line-height:1.15;letter-spacing:-.02em;}
+.sec-h em{color:var(--primary);font-style:normal;}
+
+/* page headers */
+.ph{font-size:clamp(20px,2.8vw,42px);font-weight:800;letter-spacing:-.02em;margin-bottom:.2em;}
+.ph .hl{color:var(--primary);}
+.ps{font-size:clamp(11px,.95vw,14px);color:var(--text-2);margin-bottom:1.2em;max-width:900px;line-height:1.65;}
+
+/* grid / cards */
+.grid{display:grid;gap:12px;width:100%;min-height:0;}
+.g2{grid-template-columns:repeat(2,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:clamp(13px,1.4vw,20px);backdrop-filter:blur(20px) saturate(1.3);box-shadow:0 4px 18px rgba(0,0,0,.38);position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(245,118,3,.5),transparent);}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(245,118,3,.16),0 3px 12px rgba(0,0,0,.3);border-color:rgba(245,118,3,.38);}
+.ct{font-size:clamp(12px,1.05vw,15px);font-weight:700;color:var(--primary);margin-bottom:.4em;}
+.cb{font-size:clamp(11px,.88vw,13px);color:var(--text-2);line-height:1.65;}
+.ci{font-size:clamp(18px,1.8vw,26px);margin-bottom:.4em;display:block;}
+
+/* acrylic */
+.ac{background:rgba(245,118,3,.05);border:1px solid var(--border);border-radius:var(--rl);padding:clamp(13px,1.5vw,22px);backdrop-filter:blur(36px) saturate(1.4);}
+.ac .pl{font-size:clamp(9px,.78vw,11px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);margin-bottom:.8em;}
+
+/* list */
+.fl{list-style:none;}
+.fl li{padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:9px;font-size:clamp(11px,.9vw,13px);color:var(--text-2);line-height:1.6;}
+.fl li:last-child{border-bottom:none;}
+.fl li::before{content:'›';color:var(--primary);font-size:1.2em;line-height:1.25;flex-shrink:0;}
+.fl li strong{color:var(--text);font-weight:600;}
+
+/* split */
+.split{display:grid;gap:22px;align-items:start;width:100%;min-height:0;}
+.s12{grid-template-columns:1.1fr .9fr;}
+.s11{grid-template-columns:1fr 1fr;}
+
+/* main data table */
+.tbl{width:100%;border-collapse:collapse;font-size:clamp(10px,.83vw,12px);}
+.tbl th{background:rgba(245,118,3,.15);color:var(--primary);font-weight:700;padding:7px 10px;text-align:left;border-bottom:1px solid var(--primary-border);}
+.tbl td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top;line-height:1.5;}
+.tbl tr:last-child td{border-bottom:none;}
+
+/* AI/人的视角 table */
+.ptbl{width:100%;border-collapse:collapse;font-size:clamp(10px,.85vw,13px);margin-bottom:.8em;}
+.ptbl td{border:1px solid rgba(245,118,3,.22);padding:clamp(7px,.9vw,12px) clamp(8px,1vw,14px);vertical-align:top;line-height:1.6;}
+.ptbl .row-hd{background:rgba(245,118,3,.12);color:var(--primary);font-weight:700;white-space:nowrap;width:7em;}
+.ptbl .cell-content{color:var(--text-2);}
+.ptbl .cell-content strong{color:var(--text);}
+
+/* stat */
+.snum{font-size:clamp(26px,3.8vw,52px);font-weight:900;background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.2em;}
+
+/* flow */
+.flow{display:flex;align-items:center;gap:0;flex-wrap:nowrap;width:100%;overflow:hidden;}
+.step{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:clamp(9px,1vw,15px) clamp(7px,.8vw,11px);text-align:center;}
+.step-n{font-size:clamp(9px,.78vw,11px);color:var(--primary);font-weight:700;margin-bottom:.3em;}
+.step-t{font-size:clamp(10px,.85vw,13px);font-weight:700;color:var(--text);line-height:1.3;}
+.arrow{font-size:clamp(11px,1vw,15px);color:var(--primary);flex-shrink:0;padding:0 3px;}
+
+/* quote */
+.slide.qt{align-items:center;text-align:center;}
+.qm{font-size:clamp(40px,5vw,72px);color:rgba(245,118,3,.25);line-height:.8;margin-bottom:.3em;font-family:Georgia,serif;}
+.qtx{font-size:clamp(17px,2.2vw,32px);font-weight:700;color:var(--text);max-width:780px;line-height:1.5;letter-spacing:-.01em;margin-bottom:.7em;}
+.qtx .hl{color:var(--primary);}
+.qsrc{font-size:clamp(11px,.88vw,13px);color:var(--text-3);}
+
+/* end */
+.slide.end{align-items:center;text-align:center;}
+.end-t{font-size:clamp(26px,3.8vw,54px);font-weight:900;margin-bottom:.3em;}
+.end-s{font-size:clamp(12px,1.05vw,16px);color:var(--primary);font-weight:600;margin-top:.5em;}
+.end-m{font-size:clamp(10px,.85vw,12px);color:var(--text-3);margin-top:.8em;letter-spacing:.07em;}
+
+/* links */
+a.lnk{color:var(--primary-light);text-decoration:underline;text-underline-offset:3px;transition:color .15s;word-break:break-all;}
+a.lnk:hover{color:var(--primary);}
+
+/* lightbox */
+.lb-wrap{cursor:zoom-in;display:block;}
+.lb-wrap img{
+  display:block;width:100%;
+  border-radius:var(--r);
+  border:2px solid rgba(255,255,255,0.5);
+  box-shadow:0 0 0 1px rgba(245,118,3,.2),0 3px 14px rgba(0,0,0,.4);
+  transition:border-color .18s,box-shadow .18s;
+}
+.lb-wrap:hover img{
+  border-color:rgba(255,255,255,0.85);
+  box-shadow:0 0 0 2px var(--primary),0 6px 24px rgba(0,0,0,.5);
+}
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;}
+#lightbox.on{display:flex;}
+#lightbox img{max-width:92vw;max-height:92vh;border-radius:12px;border:2px solid rgba(255,255,255,.6);box-shadow:0 0 60px rgba(0,0,0,.8);}
+
+/* emoji stickers */
+.sticker-row{display:flex;gap:clamp(10px,1.5vw,20px);align-items:flex-end;flex-wrap:wrap;}
+.sticker-row img{width:clamp(76px,8.5vw,120px);height:clamp(76px,8.5vw,120px);object-fit:contain;border-radius:12px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5));transition:transform .2s ease;cursor:zoom-in;border:none;box-shadow:none;}
+.sticker-row img:hover{transform:scale(1.08) rotate(-2deg);}
+
+/* ── 右侧垂直导航 ── */
+.nav-dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px;z-index:200;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(245,118,3,.25);cursor:pointer;transition:background .2s,transform .2s,height .22s;}
+.dot.on{background:var(--primary);transform:scale(1.4);height:18px;border-radius:3px;}
+.dot:hover{background:rgba(245,118,3,.65);}
+
+/* 页码 */
+.pgc{position:fixed;bottom:18px;left:24px;font-size:11px;color:var(--text-3);z-index:200;font-variant-numeric:tabular-nums;}
+
+/* 上下翻页按钮 */
+.nb{position:fixed;left:50%;transform:translateX(-50%);width:48px;height:48px;background:rgba(245,118,3,.12);border:1px solid var(--primary-border);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;transition:opacity .2s,background .2s;color:var(--primary);font-size:20px;}
+.nb:hover{opacity:1;background:rgba(245,118,3,.22);}
+.nb.p{top:16px;}
+.nb.n{bottom:16px;}
+.deck:hover .nb{opacity:.6;}
+
+/* 滚动提示箭头 */
+.scroll-hint{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.5;z-index:2;animation:bounce 2s ease infinite;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll-hint span{font-size:11px;color:var(--text-3);letter-spacing:.1em;}
+.scroll-hint svg{color:var(--primary);}
+
+/* anim on scroll into view */
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.anim{opacity:0;}
+.anim.visible{animation:fu .5s ease forwards;}
+.anim.d1{animation-delay:.05s}.anim.d2{animation-delay:.12s}.anim.d3{animation-delay:.19s}
+.anim.d4{animation-delay:.26s}.anim.d5{animation-delay:.33s}.anim.d6{animation-delay:.4s}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ① COVER -->
+<div class="slide cover" data-i="0" id="slide-0">
+  <div class="slide-inner">
+    <div class="eyebrow anim d1">成长手记 · 2026.06</div>
+    <div class="cover-h1 anim d2">把 AI 用进<span>真实工作</span></div>
+    <div class="cover-h1 anim d2" style="font-size:clamp(18px,2.4vw,36px);font-weight:700;color:var(--text-2);margin-top:.2em;">从问答提效到工具化探索</div>
+    <span class="bar anim d3"></span>
+    <div class="cover-sub anim d3">
+      核心工具：<strong>ChatGPT × Claude</strong><br>
+      辅助学习的工具：<strong>Codex、Python、VS Code</strong><br>
+      核心路径：问答 → Skill → Vibe Coding
+    </div>
+    <div class="tags anim d4">
+      <span class="tag">问答 · 内容生产</span>
+      <span class="tag">Skill · 标准化交付</span>
+      <span class="tag">Vibe Coding · 工具化</span>
+    </div>
+    <div class="sharer anim d5">
+      <span>分享人</span><strong>小庆</strong>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>向下滑动</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M4 9l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</div>
+
+<!-- ② CORE QUOTE -->
+<div class="slide qt" data-i="1" id="slide-1">
+  <div class="slide-inner" style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+    <div class="qm anim d1">"</div>
+    <div class="qtx anim d2">AI 用得好，不是因为<span class="hl">提示词写得好</span>，<br>而是因为<span class="hl">问题拆得清</span>。</div>
+    <div class="qsrc anim d3">核心观点</div>
+    <div class="anim d4" style="margin-top:1.8em;font-size:clamp(11px,.92vw,13px);color:var(--text-3);max-width:720px;">中山大学 AI 学院学长：更强的模型（多为国外闭源）在代码生成上明显更好；用弱模型很难提效，甚至不如人工。→ 锁定 ChatGPT & Claude</div>
+  </div>
+</div>
+
+<!-- ③ AI 使用地图 -->
+<div class="slide" data-i="2" id="slide-2">
+  <div class="slide-inner">
+    <div class="label anim d1">Overview</div>
+    <div class="ph anim d2">我的 AI 使用地图</div>
+    <div class="ps anim d3">从简单问答到标准化交付，再到把个人想法做成可用工具。</div>
+    <div class="grid g3 anim d4">
+      <div class="card"><span class="ci">💬</span><div class="ct">01 · 问答</div><div class="cb">内容与方案生成。复杂问题拆解、多视角碰撞、快速收敛。</div></div>
+      <div class="card"><span class="ci">⚙️</span><div class="ct">02 · Skill</div><div class="cb">标准化交付物批量生成。把沉淀的工作流封装为可复用模板。</div></div>
+      <div class="card"><span class="ci">🛠️</span><div class="ct">03 · Vibe Coding</div><div class="cb">把个人想法做成可用工具。借助 Codex / Python / VS Code 构建本地程序与网站。</div></div>
+    </div>
+    <div class="anim d5" style="margin-top:12px;">
+      <div class="flow">
+        <div class="step"><div class="step-n">Step 1</div><div class="step-t">业务理解</div></div><div class="arrow">→</div>
+        <div class="step"><div class="step-n">Step 2</div><div class="step-t">场景拆分</div></div><div class="arrow">→</div>
+        <div class="step"><div class="step-n">Step 3</div><div class="step-t">AI 形成 demo</div></div><div class="arrow">→</div>
+        <div class="step"><div class="step-n">Step 4</div><div class="step-t">真实验证</div></div><div class="arrow">→</div>
+        <div class="step"><div class="step-n">Step 5</div><div class="step-t">提炼规律</div></div><div class="arrow">→</div>
+        <div class="step"><div class="step-n">Step 6</div><div class="step-t">迁移新场景</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ④ SECTION: 问答 -->
+<div class="slide sec" data-i="3" id="slide-3">
+  <div class="sec-bg-num anim d1">01</div>
+  <div class="slide-inner">
+    <div class="label anim d2">How I Use AI · Part One</div>
+    <div class="sec-h anim d3">问答模式<br><em>复杂问题拆解与内容生产</em></div>
+  </div>
+</div>
+
+<!-- ⑤ 战略动员会 -->
+<div class="slide" data-i="4" id="slide-4">
+  <div class="slide-inner">
+    <div class="label anim d1">01 · 问答 — 战略动员会</div>
+    <div class="ph anim d2">AI <span class="hl">全链路</span>内容生产</div>
+    <div class="ps anim d3">AI 视频、AI 表情包、AI 配音、AI 海报——战略动员内容一站生成。</div>
+    <div class="anim d4" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div>
+        <div class="card" style="margin-bottom:10px;">
+          <div class="ct">AI 视频</div>
+          <div class="cb" style="margin-bottom:.8em;">Runway Gen-3：高质量视频生成，15秒成片</div>
+          <div style="font-size:clamp(10px,.78vw,12px);color:var(--text-3);">质感：⭐⭐⭐⭐⭐</div>
+        </div>
+        <div class="card">
+          <div class="ct">AI 配音</div>
+          <div class="cb">Suno / HeyGen：高保真配音与嘴型同步</div>
+        </div>
+      </div>
+      <div class="ac" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="pl">AI 表情包 · 点击放大</div>
+        <div class="sticker-row" style="justify-content:center;">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FFB347'/%3E%3Ccircle cx='35' cy='35' r='8' fill='%23000'/%3E%3Ccircle cx='65' cy='35' r='8' fill='%23000'/%3E%3Cpath d='M 30 60 Q 50 75 70 60' stroke='%23000' stroke-width='2' fill='none'/%3E%3C/svg%3E" alt="">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2387CEEB'/%3E%3Ccircle cx='35' cy='35' r='8' fill='%23000'/%3E%3Ccircle cx='65' cy='35' r='8' fill='%23000'/%3E%3Cpath d='M 30 60 Q 50 65 70 60' stroke='%23000' stroke-width='2' fill='none'/%3E%3C/svg%3E" alt="">
+        </div>
+      </div>
+      <div class="lb-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23333'/%3E%3Ctext x='150' y='100' text-anchor='middle' fill='%23fff' font-size='18' font-family='Arial'%3E海报示例%3C/text%3E%3C/svg%3E" alt="示例海报" onclick="openLB(this)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑥ 调研演进 -->
+<div class="slide" data-i="5" id="slide-5">
+  <div class="slide-inner">
+    <div class="label anim d1">01 · 问答 — 调查研究</div>
+    <div class="ph anim d2">调研能力 <span class="hl">逐年跃迁</span></div>
+    <div class="ps anim d3">借助 AI 持续提效（eg：多个视角的观点碰撞、快速&amp;科学收敛），把更多时间精力释放在调研一线。</div>
+    <div class="anim d4" style="overflow-x:auto;">
+      <table class="tbl">
+        <tr><th>时间</th><th>调研周期</th><th>AI 提效方向</th><th>数据产出</th></tr>
+        <tr><td>2023年</td><td>30-45天/项</td><td>文献梳理、思路框架</td><td>5份报告</td></tr>
+        <tr><td>2024年</td><td>20-25天/项</td><td>多视角碰撞、快速收敛</td><td>12份报告</td></tr>
+        <tr><td>2025年</td><td>10-15天/项</td><td>自动化数据清洗、可视化</td><td>20+份报告</td></tr>
+      </table>
+    </div>
+    <div class="grid g3 anim d5" style="margin-top:11px;">
+      <div class="card" style="text-align:center;"><div class="snum">5+</div><div class="cb">2025 年专项研究项目</div></div>
+      <div class="card" style="text-align:center;"><div class="snum">↓50%</div><div class="cb">单份研究周期压缩幅度</div></div>
+      <div class="card" style="text-align:center;"><div class="snum">↓</div><div class="cb" style="color:var(--primary-light);">大幅减少协同人力投入</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑦ SECTION: Skill -->
+<div class="slide sec" data-i="6" id="slide-6">
+  <div class="sec-bg-num anim d1">02</div>
+  <div class="slide-inner">
+    <div class="label anim d2">How I Use AI · Part Two</div>
+    <div class="sec-h anim d3">Skill 固化<br><em>标准化交付物批量生成</em></div>
+  </div>
+</div>
+
+<!-- ⑧ PHAS 截图 + AI/人的视角 表格 -->
+<div class="slide" data-i="7" id="slide-7">
+  <div class="slide-inner">
+    <div class="label anim d1">02 · Skill — 绩效健康度</div>
+    <div class="ph anim d2">案例：<span class="hl">PHAS</span> 个人报告</div>
+    <div class="ps anim d3" style="margin-bottom:.6em;">场景非常多，eg：周报、个人定制报告等。以绩效健康度为例，点击图片可放大查看。</div>
+
+    <!-- AI/人的视角 表格 -->
+    <div class="anim d3" style="overflow-x:auto;margin-bottom:10px;">
+      <table class="ptbl">
+        <tr><td class="row-hd">AI 的视角</td><td class="cell-content">自动生成图表、数据分析、要点提炼。<strong>优势：快速、标准、无遗漏</strong></td></tr>
+        <tr><td class="row-hd">人的视角</td><td class="cell-content">审视业务逻辑、调整展现方式、讲好故事。<strong>优势：有温度、可信、能说服</strong></td></tr>
+        <tr><td class="row-hd">最佳实践</td><td class="cell-content">🤝 AI 负责 80%「标准活」，人专注 20%「高价值活」 = 投入↓ + 产出质量↑</td></tr>
+      </table>
+    </div>
+
+    <!-- 三张截图 -->
+    <div class="anim d4" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div class="lb-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='250'%3E%3Crect width='200' height='250' fill='%23f0f0f0'/%3E%3Ctext x='100' y='125' text-anchor='middle' fill='%23666' font-size='14'%3E截图1%3C/text%3E%3C/svg%3E" alt="示例截图1" onclick="openLB(this)">
+      </div>
+      <div class="lb-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='250'%3E%3Crect width='200' height='250' fill='%23e8f4f8'/%3E%3Ctext x='100' y='125' text-anchor='middle' fill='%23666' font-size='14'%3E截图2%3C/text%3E%3C/svg%3E" alt="示例截图2" onclick="openLB(this)">
+      </div>
+      <div class="lb-wrap">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='250'%3E%3Crect width='200' height='250' fill='%23f0e8f8'/%3E%3Ctext x='100' y='125' text-anchor='middle' fill='%23666' font-size='14'%3E截图3%3C/text%3E%3C/svg%3E" alt="示例截图3" onclick="openLB(this)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑨ SECTION: Vibe Coding -->
+<div class="slide sec" data-i="8" id="slide-8">
+  <div class="sec-bg-num anim d1">03</div>
+  <div class="slide-inner">
+    <div class="label anim d2">How I Use AI · Part Three</div>
+    <div class="sec-h anim d3">Vibe Coding<br><em>把个人想法做成可用工具</em></div>
+  </div>
+</div>
+
+<!-- ⑩ 本地智能检索 -->
+<div class="slide" data-i="9" id="slide-9">
+  <div class="slide-inner">
+    <div class="label anim d1">03 · Vibe Coding — 本地智能检索</div>
+    <div class="ph anim d2">面对 <span class="hl">13G 超额材料</span></div>
+    <div class="ps anim d3">工具：Codex × Python。部署在本地 / 办公室内网的智能问答小程序。点击图片可放大。</div>
+    <div class="split s11 anim d4">
+      <div>
+        <div class="ac" style="margin-bottom:12px;">
+          <div class="pl">核心特性</div>
+          <ul class="fl">
+            <li><strong>语义搜索</strong>：不限关键词，理解意思即可检索</li>
+            <li><strong>秒级响应</strong>：本地部署，无网络延迟</li>
+            <li><strong>多格式支持</strong>：文本、表格、图像、视频全支持</li>
+            <li><strong>知识补充</strong>：自动化爬虫更新 + 手工补充</li>
+          </ul>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:clamp(24px,3vw,36px);margin-bottom:.4em;">📚</div>
+          <div class="ct">已上线运营中</div>
+        </div>
+      </div>
+      <div class="ac">
+        <div class="pl">使用场景</div>
+        <ul class="fl">
+          <li>会议同步查阅：实时搜索最新政策、数据</li>
+          <li>报告快速成文：复用往年框架和数据</li>
+          <li>新人快速上手：减少重复提问和培训时间</li>
+          <li>团队知识沉淀：形成可迭代的「活文档」</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑪ 生成网站 + 四步 -->
+<div class="slide" data-i="10" id="slide-10">
+  <div class="slide-inner">
+    <div class="label anim d1">03 · Vibe Coding — 生成网站</div>
+    <div class="ph anim d2"><span class="hl">"编程小白"</span>也能做出真正的网页</div>
+    <div class="ps anim d3">工具：Codex × Python × VS Code × DeepSeek。从零开始，四步上线。</div>
+    <div class="grid g4 anim d3" style="margin-bottom:13px;">
+      <div class="card" style="text-align:center;"><div style="font-size:clamp(18px,2vw,28px);margin-bottom:.4em;">✨</div><div class="ct">第一步：准备工作</div><div class="cb">安装工作台，配置好 VS Code 等工具</div></div>
+      <div class="card" style="text-align:center;"><div style="font-size:clamp(18px,2vw,28px);margin-bottom:.4em;">🏗️</div><div class="ct">第二步：创建内容</div><div class="cb">用 VS Code 输出网站的 HTML / CSS 代码</div></div>
+      <div class="card" style="text-align:center;"><div style="font-size:clamp(18px,2vw,28px);margin-bottom:.4em;">💻</div><div class="ct">第三步：本地运行</div><div class="cb">在本地预览效果，反复调整优化</div></div>
+      <div class="card" style="text-align:center;border-color:rgba(245,118,3,.4);background:var(--surface-md);"><div style="font-size:clamp(18px,2vw,28px);margin-bottom:.4em;">☁️</div><div class="ct" style="color:var(--primary-light);">第四步：上线发布</div><div class="cb">上传至 GitHub，在线发布</div></div>
+    </div>
+    <div class="grid g2 anim d4">
+      <div class="card"><span class="ci">🌐</span><div class="ct">网站 1</div><div class="cb" style="margin-bottom:.6em;">宝全赵个人网站，Vibe Coding 实践成果。</div><a class="lnk" href="https://baoquanzhao.github.io" target="_blank" rel="noopener">https://baoquanzhao.github.io</a></div>
+      <div class="card"><span class="ci">🌐</span><div class="ct">网站 2</div><div class="cb" style="margin-bottom:.6em;">Ada 个人网站探索，从零生成可部署项目。</div><a class="lnk" href="https://adawei433-oss.github.io/--/" target="_blank" rel="noopener">https://adawei433-oss.github.io/--/</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑫ 6 步 -->
+<div class="slide" data-i="11" id="slide-11">
+  <div class="slide-inner">
+    <div class="label anim d1">成功要素</div>
+    <div class="ph anim d2">用好 AI 的 <span class="hl">6 个关键动作</span></div>
+    <div class="ps anim d3">不是一次性的技巧，而是可重复的思维闭环。</div>
+    <div class="flow anim d4" style="margin-top:2.5vh;">
+      <div class="step" style="padding:clamp(16px,2vw,32px) clamp(10px,1vw,16px);border-color:rgba(245,118,3,.5);"><div class="step-n" style="color:var(--primary);">01</div><div class="step-t" style="font-size:clamp(12px,1.1vw,16px);color:var(--primary);">业务<br>理解</div></div>
+      <div class="arrow">→</div>
+      <div class="step" style="padding:clamp(16px,2vw,32px) clamp(10px,1vw,16px);"><div class="step-n">02</div><div class="step-t" style="font-size:clamp(12px,1.1vw,16px);">场景<br>拆分</div></div>
+      <div class="arrow">→</div>
+      <div class="step" style="padding:clamp(16px,2vw,32px) clamp(10px,1vw,16px);"><div class="step-n">03</div><div class="step-t" style="font-size:clamp(12px,1.1vw,16px);">AI 形成<br>demo</div></div>
+      <div class="arrow">→</div>
+      <div class="step" style="padding:clamp(16px,2vw,32px) clamp(10px,1vw,16px);"><div class="step-n">04</div><div class="step-t" style="font-size:clamp(12px,1.1vw,16px);">真实世界<br>验证</div></div>
+      <div class="arrow">→</div>
+      <div class="step" style="padding:clamp(16px,2vw,32px) clamp(10px,1vw,16px);"><div class="step-n">05</div><div class="step-t" style="font-size:clamp(12px,1.1vw,16px);">提炼<br>规律</div></div>
+      <div class="arrow">→</div>
+      <div class="step" style="padding:clamp(16px,2vw,32px) clamp(10px,1vw,16px);background:var(--surface-md);border-color:rgba(245,118,3,.4);"><div class="step-n">06</div><div class="step-t" style="font-size:clamp(12px,1.1vw,16px);color:#FFFFFF;">迁移<br>新场景</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑬ 好奇心 + Hook -->
+<div class="slide" data-i="12" id="slide-12">
+  <div class="slide-inner">
+    <div class="label anim d1">背后的本质</div>
+    <div class="ph anim d2" style="text-align:center;font-size:clamp(28px,3.8vw,56px);margin-bottom:.12em;">好奇心 + 探索欲</div>
+    <div class="ps anim d3" style="text-align:center;margin:0 auto .6em;font-size:clamp(13px,1.1vw,16px);">驱动持续探索，上瘾机制让习惯自然形成。</div>
+    <div style="text-align:center;font-size:clamp(10px,.88vw,13px);color:var(--text-3);letter-spacing:.1em;margin-bottom:1.6em;" class="anim d3">参考《上瘾》(Hooked) — 一个产品让人上瘾，是因为它形成了可重复的行为闭环</div>
+    <div class="grid g4 anim d4">
+      <div class="card" style="text-align:center;"><span class="ci">⚡</span><div class="ct">触发</div><div class="cb">遇到从来没有的任务；遇到重复、复杂、低效任务</div></div>
+      <div class="card" style="text-align:center;"><span class="ci">🎯</span><div class="ct">行动</div><div class="cb">看全网最佳解法长啥样，如何拆解，立即上手</div></div>
+      <div class="card" style="text-align:center;"><span class="ci">🎁</span><div class="ct">多变酬赏</div><div class="cb">小 demo 发给朋友/同事获得反馈；沉浸心流体验；任何小进步都放大认可</div></div>
+      <div class="card" style="text-align:center;border-color:rgba(245,118,3,.4);"><span class="ci">📦</span><div class="ct" style="color:var(--primary-light);">投入</div><div class="cb">将有效提示词/流程保存为模板，形成可复用 Skill 或工具</div></div>
+    </div>
+    <div class="anim d5" style="text-align:center;margin-top:1.4em;">
+      <span style="font-size:clamp(11px,.92vw,14px);color:var(--text-3);">
+        Keep exploring → 下一个项目 / 场景 / Skill<br>
+        形成「可重复的思维模式」比「单次技巧」更重要
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ⑭ END -->
+<div class="slide end" data-i="13" id="slide-13">
+  <div class="slide-inner" style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+    <div class="end-t anim d1">Keep <span style="color:var(--primary);">Exploring</span></div>
+    <span class="bar anim d2" style="margin:1.2em auto;"></span>
+    <div class="end-s anim d3">问答 · Skill 固化 · Vibe Coding</div>
+    <div class="end-m anim d4">业务理解 → 场景拆分 → AI demo → 真实验证 → 提炼规律 → 迁移新场景</div>
+    <div style="margin-top:2em;" class="anim d5">
+      <div style="font-size:clamp(10px,.85vw,12px);color:var(--text-3);margin-bottom:.6em;">网站链接</div>
+      <div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;">
+        <a class="lnk" href="https://baoquanzhao.github.io" target="_blank" rel="noopener">宝全赵个人网站</a>
+        <a class="lnk" href="https://adawei433-oss.github.io/--/" target="_blank" rel="noopener">Ada 个人网站</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLB()"><img id="lb-img" src="" alt=""></div>
+
+<!-- Nav dots -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- Page counter -->
+<div class="pgc" id="pgc">1 / 14</div>
+
+<!-- Up / Down buttons -->
+<button class="nb p" id="prevBtn" title="上一页">↑</button>
+<button class="nb n" id="nextBtn" title="下一页">↓</button>
+
+<script>
+(function(){
+  const deck = document.getElementById('deck');
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsWrap = document.getElementById('navDots');
+  const pgc = document.getElementById('pgc');
+  const total = slides.length;
+  let cur = 0;
+
+  // Build dots
+  slides.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' on':'');
+    d.title = `第 ${i+1} 页`;
+    d.onclick = ()=> goTo(i);
+    dotsWrap.appendChild(d);
+  });
+
+  function getDots(){ return [...dotsWrap.querySelectorAll('.dot')]; }
+
+  function goTo(n){
+    if(n<0||n>=total) return;
+    cur = n;
+    const target = document.getElementById('slide-'+n);
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  // Sync on scroll (IntersectionObserver)
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && e.intersectionRatio >= 0.5){
+        cur = parseInt(e.target.id.split('-')[1]);
+        getDots().forEach((d,i)=> d.classList.toggle('on', i===cur));
+        pgc.textContent = (cur+1) + ' / ' + total;
+        e.target.querySelectorAll('.anim').forEach(el=> el.classList.add('visible'));
+      }
+    });
+  }, {threshold:0.5});
+  slides.forEach(s=> io.observe(s));
+
+  // Trigger first slide immediately
+  slides[0].querySelectorAll('.anim').forEach(el=> el.classList.add('visible'));
+
+  // Buttons
+  document.getElementById('prevBtn').onclick = ()=> goTo(cur-1);
+  document.getElementById('nextBtn').onclick = ()=> goTo(cur+1);
+
+  // Keyboard
+  document.addEventListener('keydown', e=>{
+    if(['ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault(); goTo(cur+1);}
+    if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault(); goTo(cur-1);}
+    if(e.key==='Escape') closeLB();
+  });
+
+  // Touch swipe (vertical)
+  let ty=0;
+  document.addEventListener('touchstart', e=> ty=e.touches[0].clientY, {passive:true});
+  document.addEventListener('touchend', e=>{
+    const dy = e.changedTouches[0].clientY - ty;
+    if(Math.abs(dy)>50) goTo(cur + (dy<0?1:-1));
+  });
+})();
+
+function openLB(img){
+  document.getElementById('lb-img').src = img.src;
+  document.getElementById('lightbox').classList.add('on');
+}
+function closeLB(){
+  document.getElementById('lightbox').classList.remove('on');
+}
+</script>
+</body>
+</html>

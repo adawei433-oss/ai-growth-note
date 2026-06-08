@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6月培训计划 · 干部管理基本功</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root {
+  --sidebar-w: 220px;
+  --topbar-h: 64px;
+  --bg: #F5F4F1;
+  --surface: #FFFFFF;
+  --border: #E8E6E1;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --accent: #FF7C00;
+
+  --blue-bg: #EFF6FF; --blue-bar: #DBEAFE; --blue-icon: #2563EB; --blue-name: #1E40AF; --blue-border: #BFDBFE;
+  --amber-bg: #FFFBEB; --amber-bar: #FEF3C7; --amber-icon: #D97706; --amber-name: #92400E; --amber-border: #FDE68A;
+  --green-bg: #F0FDF4; --green-bar: #D1FAE5; --green-icon: #059669; --green-name: #065F46; --green-border: #A7F3D0;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-w); height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+}
+.sidebar-logo {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-logo img { height: 32px; width: auto; }
+.sidebar-logo-text { font-size: 12px; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
+
+.nav-list { padding: 16px 10px; flex: 1; overflow-y: auto; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text-secondary);
+  transition: all .18s;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--bg); color: var(--text-primary); }
+.nav-item.active { background: #FFF4EC; color: var(--accent); border-color: #FFD9B3; }
+.nav-item .nav-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.nav-item:nth-child(1) .nav-dot { background: var(--blue-icon); }
+.nav-item:nth-child(2) .nav-dot { background: var(--amber-icon); }
+.nav-item:nth-child(3) .nav-dot { background: var(--green-icon); }
+.nav-item.active .nav-dot { background: var(--accent); }
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ─── Main ─── */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+/* ─── Topbar ─── */
+.topbar {
+  position: sticky; top: 0; z-index: 90;
+  background: rgba(245,244,241,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: var(--topbar-h);
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 12px;
+}
+.hamburger {
+  display: none; background: none; border: none; cursor: pointer;
+  padding: 6px; border-radius: 6px; color: var(--text-secondary);
+  font-size: 20px;
+}
+.search-engines {
+  display: flex; gap: 4px;
+}
+.engine-btn {
+  padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 500;
+  color: var(--text-secondary); transition: all .15s;
+  font-family: inherit;
+}
+.engine-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.engine-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+.search-wrap {
+  flex: 1; position: relative; max-width: 500px;
+}
+.search-wrap i {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 16px; pointer-events: none;
+}
+.search-input {
+  width: 100%; height: 38px;
+  padding: 0 14px 0 38px;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: var(--surface); font-size: 13px; color: var(--text-primary);
+  outline: none; font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,124,0,.12); }
+.search-btn {
+  margin-left: 6px;
+  height: 38px; padding: 0 18px; border-radius: 20px;
+  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  font-size: 13px; font-weight: 500; font-family: inherit;
+  transition: opacity .15s;
+}
+.search-btn:hover { opacity: .88; }
+
+/* ─── Content ─── */
+.content { padding: 32px 36px 60px; flex: 1; }
+
+/* ─── Section ─── */
+.section { margin-bottom: 48px; scroll-margin-top: calc(var(--topbar-h) + 20px); }
+
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: 0;
+}
+.section-header + .section-tabs { border-radius: 0; }
+
+.sec-icon-wrap {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; color: #fff; flex-shrink: 0;
+}
+.sec-info { flex: 1; }
+.sec-title { font-size: 15px; font-weight: 700; line-height: 1.2; }
+.sec-sub { font-size: 11px; margin-top: 2px; opacity: .7; }
+.sec-purpose {
+  display: inline-flex; align-items: center;
+  margin-top: 4px; padding: 2px 9px;
+  border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.sec-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 4px 11px; border-radius: 20px;
+  white-space: nowrap;
+}
+
+.section-a .section-header { background: var(--blue-bar); }
+.section-a .sec-title { color: var(--blue-name); }
+.section-a .sec-icon-wrap { background: var(--blue-icon); }
+.section-a .sec-purpose { background: var(--blue-border); color: var(--blue-name); }
+.section-a .sec-badge { background: var(--blue-border); color: #1D4ED8; }
+
+.section-b .section-header { background: var(--amber-bar); }
+.section-b .sec-title { color: var(--amber-name); }
+.section-b .sec-icon-wrap { background: var(--amber-icon); }
+.section-b .sec-purpose { background: var(--amber-border); color: var(--amber-name); }
+.section-b .sec-badge { background: var(--amber-border); color: #92400E; }
+
+.section-c .section-header { background: var(--green-bar); }
+.section-c .sec-title { color: var(--green-name); }
+.section-c .sec-icon-wrap { background: var(--green-icon); }
+.section-c .sec-purpose { background: var(--green-border); color: var(--green-name); }
+.section-c .sec-badge { background: var(--green-border); color: #065F46; }
+
+/* Tabs */
+.section-tabs {
+  display: flex; gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border); border-top: none;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 10px 16px; border: none; background: none; cursor: pointer;
+  font-size: 12px; font-weight: 500; color: var(--text-muted);
+  font-family: inherit; border-bottom: 2px solid transparent;
+  transition: all .15s; white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Cards grid */
+.section-body {
+  background: var(--surface);
+  border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 18px;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.cards-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+/* Card */
+.card {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+  cursor: pointer; text-decoration: none; color: inherit;
+  transition: all .18s;
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,124,0,.04), transparent);
+  opacity: 0; transition: opacity .18s;
+}
+.card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(255,124,0,.12); transform: translateY(-1px); }
+.card:hover::before { opacity: 1; }
+.card.opt { border-style: dashed; opacity: .75; }
+
+.card-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.card-text { flex: 1; min-width: 0; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.35; }
+.card-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; }
+.card-tag {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px 7px; border-radius: 20px; font-size: 10px; font-weight: 600;
+}
+.tag-light { background: #EDE9FF; color: #5B21B6; }
+.tag-mid { background: #FEF3C7; color: #92400E; }
+.tag-heavy { background: #FFE4E6; color: #9F1239; }
+.tag-green { background: #D1FAE5; color: #065F46; }
+
+.week-pill {
+  display: inline-block; padding: 1px 7px; border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+}
+.wk2 { background: #DBEAFE; color: #1D4ED8; }
+.wk3 { background: #D1FAE5; color: #065F46; }
+.wk4 { background: #FFE4E6; color: #BE123C; }
+.wkalt { background: #F3E8FF; color: #7E22CE; border: 1px dashed #C084FC; }
+
+.note-bar {
+  margin-top: 12px; padding: 9px 14px;
+  background: var(--bg); border-radius: 8px;
+  font-size: 11px; color: var(--text-secondary);
+  border-left: 3px solid var(--border);
+}
+
+/* Overlay for mobile */
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  z-index: 99; backdrop-filter: blur(2px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.15); }
+  .overlay.show { display: block; }
+  .main { margin-left: 0; }
+  .hamburger { display: flex; align-items: center; justify-content: center; }
+  .content { padding: 20px 16px 48px; }
+  .cards-grid { grid-template-columns: 1fr 1fr; }
+  .topbar { padding: 0 16px; gap: 8px; }
+  .search-wrap { max-width: none; }
+  .search-engines { display: none; }
+}
+@media (max-width: 480px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .cards-grid.cols-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ─── Sidebar ─── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    
+    <div class="sidebar-logo-text">培训计划<br>干部能力建设</div>
+  </div>
+
+  <nav class="nav-list">
+    <a class="nav-item active" href="#sec-a" onclick="closeSidebar()">
+      <span class="nav-dot"></span>知识库运营
+    </a>
+    <a class="nav-item" href="#sec-b" onclick="closeSidebar()">
+      <span class="nav-dot"></span>专题培训
+    </a>
+    <a class="nav-item" href="#sec-c" onclick="closeSidebar()">
+      <span class="nav-dot"></span>专项研究
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">6月培训计划<br>内部文件 · 请勿外传</div>
+</aside>
+
+<!-- ─── Main ─── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="菜单">
+      <i class="ti ti-menu-2"></i>
+    </button>
+    <div class="search-engines">
+      <button class="engine-btn active" onclick="setEngine(this,'https://www.baidu.com/s?wd=')">百度</button>
+      <button class="engine-btn" onclick="setEngine(this,'https://www.google.com/search?q=')">谷歌</button>
+      <button class="engine-btn" onclick="setEngine(this,'https://www.bing.com/search?q=')">必应</button>
+    </div>
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input class="search-input" id="searchInput" type="text" placeholder="搜索培训内容..." onkeydown="handleSearch(event)">
+    </div>
+    <button class="search-btn" onclick="doSearch()"><i class="ti ti-arrow-right"></i></button>
+  </header>
+
+  <!-- Content -->
+  <main class="content">
+
+    <!-- ① 知识库运营 -->
+    <section class="section section-a" id="sec-a">
+      <div class="section-header">
+        <div class="sec-icon-wrap"><i class="ti ti-books"></i></div>
+        <div class="sec-info">
+          <div class="sec-title">知识库运营</div>
+          <div class="sec-sub">绩效管理 · 复盘 · 调研</div>
+          <div class="sec-purpose">目的：支持干部关键管理节点（绩效面谈、复盘等）完成管理动作</div>
+        </div>
+        <span class="sec-badge">6月底前推完</span>
+      </div>
+      <div class="section-tabs" id="tabs-a">
+        <button class="tab-btn active" onclick="switchTab('a',0,this)">全部</button>
+        <button class="tab-btn" onclick="switchTab('a',1,this)">绩效管理</button>
+        <button class="tab-btn" onclick="switchTab('a',2,this)">复盘</button>
+        <button class="tab-btn" onclick="switchTab('a',3,this)">调研</button>
+      </div>
+      <div class="section-body">
+        <!-- 全部 -->
+        <div class="tab-panel active" id="a-panel-0">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#EFF6FF"><i class="ti ti-chart-bar" style="color:#2563EB;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">绩效管理</div>
+                <div class="card-desc">
+                  <span class="card-tag tag-light">轻量</span>
+                  <span style="color:var(--text-muted)">4篇 · 1周内推完</span>
+                </div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#EFF6FF"><i class="ti ti-refresh" style="color:#2563EB;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">复盘</div>
+                <div class="card-desc">
+                  <span class="card-tag tag-light">轻量</span>
+                  <span style="color:var(--text-muted)">2篇 · 1周内推完</span>
+                </div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#EFF6FF"><i class="ti ti-clipboard-text" style="color:#2563EB;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">调研</div>
+                <div class="card-desc">
+                  <span class="card-tag tag-light">轻量</span>
+                  <span style="color:var(--text-muted)">2大板块 · 1周内推完</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 绩效管理 -->
+        <div class="tab-panel" id="a-panel-1">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#EFF6FF"><i class="ti ti-chart-bar" style="color:#2563EB;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">绩效管理</div>
+                <div class="card-desc"><span class="card-tag tag-light">轻量</span><span style="color:var(--text-muted)">4篇 · 1周内推完</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 复盘 -->
+        <div class="tab-panel" id="a-panel-2">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#EFF6FF"><i class="ti ti-refresh" style="color:#2563EB;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">复盘</div>
+                <div class="card-desc"><span class="card-tag tag-light">轻量</span><span style="color:var(--text-muted)">2篇 · 1周内推完</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 调研 -->
+        <div class="tab-panel" id="a-panel-3">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#EFF6FF"><i class="ti ti-clipboard-text" style="color:#2563EB;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">调研</div>
+                <div class="card-desc"><span class="card-tag tag-light">轻量</span><span style="color:var(--text-muted)">2大板块 · 1周内推完</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 专题培训 -->
+    <section class="section section-b" id="sec-b">
+      <div class="section-header">
+        <div class="sec-icon-wrap"><i class="ti ti-chalkboard"></i></div>
+        <div class="sec-info">
+          <div class="sec-title">专题培训</div>
+          <div class="sec-sub">新干部带团队 · 管理沟通 · 用户研讨</div>
+          <div class="sec-purpose">目的：支持干部关键管理节点（绩效面谈、复盘等）完成管理动作</div>
+        </div>
+        <span class="sec-badge">每周一次</span>
+      </div>
+      <div class="section-tabs" id="tabs-b">
+        <button class="tab-btn active" onclick="switchTab('b',0,this)">全部</button>
+        <button class="tab-btn" onclick="switchTab('b',1,this)">第2周</button>
+        <button class="tab-btn" onclick="switchTab('b',2,this)">第3周</button>
+        <button class="tab-btn" onclick="switchTab('b',3,this)">第4周</button>
+        <button class="tab-btn" onclick="switchTab('b',4,this)">备选</button>
+      </div>
+      <div class="section-body">
+        <!-- 全部 -->
+        <div class="tab-panel active" id="b-panel-0">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-users" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">新干部如何带领新团队</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wk2">第2周</span><span style="color:var(--text-muted)">每周六</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-flame" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">如何开好周会&amp;写好周报</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wk3">第3周</span><span style="color:var(--text-muted)">每周六</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-flame" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">如何做好一对一沟通</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wk4">第4周</span><span style="color:var(--text-muted)">每周六</span></div>
+              </div>
+            </a>
+            <a class="card opt" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-brain" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">用户专题研讨会</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wkalt">备选</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 第2周 -->
+        <div class="tab-panel" id="b-panel-1">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-users" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">新干部如何带领新团队</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wk2">第2周</span><span style="color:var(--text-muted)">每周六</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 第3周 -->
+        <div class="tab-panel" id="b-panel-2">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-flame" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">如何开好周会&amp;写好周报</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wk3">第3周</span><span style="color:var(--text-muted)">每周六</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 第4周 -->
+        <div class="tab-panel" id="b-panel-3">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-flame" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">如何做好一对一沟通</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wk4">第4周</span><span style="color:var(--text-muted)">每周六</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 备选 -->
+        <div class="tab-panel" id="b-panel-4">
+          <div class="cards-grid">
+            <a class="card opt" href="#" target="_blank">
+              <div class="card-icon" style="background:#FFFBEB"><i class="ti ti-brain" style="color:#D97706;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">用户专题研讨会</div>
+                <div class="card-desc"><span class="card-tag tag-mid">中度</span><span class="week-pill wkalt">备选</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 专项研究 -->
+    <section class="section section-c" id="sec-c">
+      <div class="section-header">
+        <div class="sec-icon-wrap"><i class="ti ti-microscope"></i></div>
+        <div class="sec-info">
+          <div class="sec-title">专项研究</div>
+          <div class="sec-sub">AI重构工作流 · 调研专项支持</div>
+          <div class="sec-purpose">目的：帮助重点部门实现AI转型、做好调研</div>
+        </div>
+        <span class="sec-badge">弹性排期</span>
+      </div>
+      <div class="section-tabs" id="tabs-c">
+        <button class="tab-btn active" onclick="switchTab('c',0,this)">全部</button>
+        <button class="tab-btn" onclick="switchTab('c',1,this)">AI重构工作流</button>
+        <button class="tab-btn" onclick="switchTab('c',2,this)">调研专项支持</button>
+      </div>
+      <div class="section-body">
+        <!-- 全部 -->
+        <div class="tab-panel active" id="c-panel-0">
+          <div class="cards-grid cols-2">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-headset" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">A团队</div>
+                <div class="card-desc"><span class="card-tag tag-heavy">重度</span><span style="color:var(--text-muted)">AI重构工作流</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-phone" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">B团队</div>
+                <div class="card-desc"><span class="card-tag tag-heavy">重度</span><span style="color:var(--text-muted)">AI重构工作流</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-truck" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">C团队</div>
+                <div class="card-desc"><span class="card-tag tag-heavy">重度</span><span style="color:var(--text-muted)">AI重构工作流</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-search" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">调查研究专项支持</div>
+                <div class="card-desc"><span class="card-tag tag-green">重度</span><span style="color:var(--text-muted)">调研专项支持</span></div>
+              </div>
+            </a>
+          </div>
+          <div class="note-bar">AI重构工作流与调研专项支持均为弹性周期，排期以业务方确认为准。</div>
+        </div>
+        <!-- AI重构 -->
+        <div class="tab-panel" id="c-panel-1">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-headset" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">A团队</div>
+                <div class="card-desc"><span class="card-tag tag-heavy">重度</span><span style="color:var(--text-muted)">AI重构工作流</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-phone" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">B团队</div>
+                <div class="card-desc"><span class="card-tag tag-heavy">重度</span><span style="color:var(--text-muted)">AI重构工作流</span></div>
+              </div>
+            </a>
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-truck" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">C团队</div>
+                <div class="card-desc"><span class="card-tag tag-heavy">重度</span><span style="color:var(--text-muted)">AI重构工作流</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <!-- 调研专项 -->
+        <div class="tab-panel" id="c-panel-2">
+          <div class="cards-grid">
+            <a class="card" href="#" target="_blank">
+              <div class="card-icon" style="background:#F0FDF4"><i class="ti ti-search" style="color:#059669;font-size:18px"></i></div>
+              <div class="card-text">
+                <div class="card-title">调查研究专项支持</div>
+                <div class="card-desc"><span class="card-tag tag-green">重度</span><span style="color:var(--text-muted)">调研专项支持</span></div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ── Search ──
+let searchEngine = 'https://www.baidu.com/s?wd=';
+function setEngine(btn, url) {
+  document.querySelectorAll('.engine-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  searchEngine = url;
+}
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.open(searchEngine + encodeURIComponent(q), '_blank');
+}
+function handleSearch(e) { if (e.key === 'Enter') doSearch(); }
+
+// ── Sidebar toggle ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ── Tabs ──
+function switchTab(section, idx, btn) {
+  const panelPrefix = section + '-panel-';
+  document.querySelectorAll('[id^="' + panelPrefix + '"]').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelPrefix + idx).classList.add('active');
+  const tabContainer = document.getElementById('tabs-' + section);
+  tabContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Scroll Spy ──
+const sections = ['sec-a', 'sec-b', 'sec-c'];
+const navItems = document.querySelectorAll('.nav-item');
+const topbarH = 64;
+
+function updateSpy() {
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= topbarH + 40) current = id;
+  });
+  navItems.forEach(item => {
+    item.classList.toggle('active', item.getAttribute('href') === '#' + current);
+  });
+}
+
+document.querySelector('.main').addEventListener('scroll', updateSpy, { passive: true });
+window.addEventListener('scroll', updateSpy, { passive: true });
+</script>
+</body>
+</html>

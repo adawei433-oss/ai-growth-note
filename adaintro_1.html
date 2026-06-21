@@ -293,6 +293,14 @@ strong{font-weight:700}
 .nav button.active{background:var(--green);transform:scale(1.5)}
 .nav button:hover{background:var(--green)}
 @media(max-width:680px){.nav{right:10px;gap:8px}}
+/* 第一部分小节标签（轻量胶囊 + 三拍进度点）*/
+.seclabel{display:inline-flex;align-items:center;gap:9px;margin-bottom:12px}
+.seclabel .chip{font-family:var(--cjk);font-size:clamp(11px,1vw,13px);font-weight:700;color:#fff;background:var(--green);border-radius:14px;padding:4px 13px;white-space:nowrap}
+.seclabel .dots{display:flex;gap:5px}
+.seclabel .dots i{width:6px;height:6px;border-radius:50%;background:rgba(46,125,50,.25);display:block}
+.seclabel .dots i.on{background:var(--green);width:18px;border-radius:3px}
+.ai-more{display:inline-block;margin-top:.6em;font-family:var(--cjk);font-size:clamp(11px,.92vw,13px);font-weight:700;color:var(--green-dk);background:var(--c1-soft,var(--green-soft));border-radius:8px;padding:3px 10px}
+@media(max-width:560px){.seclabel{margin-bottom:9px}.seclabel .chip{font-size:11px;padding:3px 11px}}
 /* ============ 手机自适应（≤560px）============ */
 @media(max-width:560px){
   /* 允许每页在手机上纵向滚动，内容多也不被截断 */
@@ -407,6 +415,7 @@ strong{font-weight:700}
   <!-- 3 timeline -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">走过的路</span><span class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div>
       <div class="eyebrow">核心是时间线 · 三家公司、四段经历</div>
       <span class="bar"></span>
       <div class="tl">
@@ -423,13 +432,14 @@ strong{font-weight:700}
   <!-- 4 capabilities -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">手里的能力</span><span class="dots"><i class=""></i><i class="on"></i><i class=""></i><i class=""></i></span></div>
       <div class="eyebrow">核心讲最近几年（也是过去几年一直沉淀而来）</div>
       <h2 class="ph">从「懂人」到「懂组织、懂业务」，再到「用好 AI」</h2>
       <div class="caps">
         <div class="cap"><span class="k">学习发展</span><h4>领导力培训 · 业务培训 · 新人转型</h4><p>飞龙、藏龙（干部培养）、源动力（校招管培生）、技术成长训练营、内训师体系——多类项目从设计到落地。</p></div>
         <div class="cap"><span class="k">组织发展</span><h4>组织研究 · 组织变革 · HC 管理</h4><p>10 多份定制化的转型组织研究、产研职级 <b>T3–T10</b> 体系变革；业务转型支持。</p></div>
         <div class="cap"><span class="k">企业文化</span><h4>文化变革 · 文化氛围</h4><p>美团文化变革——领导力原则 <b>0→1</b> 初创成员；主导美团 BG 事业部、土巴兔等公司年会等大型全员活动，把文化做进体感。</p></div>
-        <div class="cap ai"><span class="k">探索 AI</span><h4>AI 如何支持 HR 工作转型</h4><p><b>问答提效 → 封装可复用 Skill → 做成能跑的工具/网站</b></p></div>
+        <div class="cap ai"><span class="k">探索 AI</span><h4>AI 如何支持 HR 工作转型</h4><p><b>问答提效 → 封装可复用 Skill → 做成能跑的工具/网站</b></p><span class="ai-more">↓ 下面几页重点展开</span></div>
       </div>
     </div>
     <div class="cue up" data-dir="up"></div>
@@ -439,13 +449,14 @@ strong{font-weight:700}
   <!-- 5 AI usage map -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">AI 实践</span><span class="dots"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i></span></div>
       <div class="eyebrow">OVERVIEW · 我的 AI 使用地图</div>
       <h2 class="ph">我的 AI 使用地图</h2>
       <p class="ps">从简单问答到标准化交付，再到把个人想法做成可用工具。</p>
       <div class="umap">
-        <div class="ucard"><span class="ic">&#128172;</span><div class="st">01 · 问答</div><h4>内容与方案生成</h4><p>复杂问题拆解、多视角碰撞、快速收敛。</p></div>
-        <div class="ucard"><span class="ic">&#9881;&#65039;</span><div class="st">02 · Skill</div><h4>标准化交付物批量生成</h4><p>把沉淀的工作流封装为可复用模板。</p></div>
-        <div class="ucard"><span class="ic">&#128296;</span><div class="st">03 · Vibe Coding</div><h4>把想法做成可用工具</h4><p>借助 Codex / Python / VS Code 构建本地程序与网站。</p></div>
+        <div class="ucard"><span class="ic">&#128172;</span><div class="st">01 · 问答</div><h4>内容与方案生成</h4><p>复杂问题拆解、多视角碰撞、快速收敛。</p><p style="margin-top:.5em;color:var(--green);font-weight:700;font-size:.92em">2 个案例 ↓</p></div>
+        <div class="ucard"><span class="ic">&#9881;&#65039;</span><div class="st">02 · Skill</div><h4>标准化交付物批量生成</h4><p>把沉淀的工作流封装为可复用模板。</p><p style="margin-top:.5em;color:var(--green);font-weight:700;font-size:.92em">1 个案例 ↓</p></div>
+        <div class="ucard"><span class="ic">&#128296;</span><div class="st">03 · Vibe Coding</div><h4>把想法做成可用工具</h4><p>借助 Codex / Python / VS Code 构建本地程序与网站。</p><p style="margin-top:.5em;color:var(--green);font-weight:700;font-size:.92em">2 个案例 ↓</p></div>
       </div>
       <div class="flow6">
         <span class="n">业务理解</span><span class="a">&rarr;</span><span class="n">场景拆分</span><span class="a">&rarr;</span>
@@ -460,6 +471,7 @@ strong{font-weight:700}
   <!-- 6 问答 战略动员会 + stickers -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">AI 实践</span><span class="dots"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i></span></div>
       <div class="eyebrow">01 · 问答 — 战略动员会</div>
       <h2 class="ph">AI <span class="hl">全链路</span>内容生产</h2>
       <p class="ps">AI 视频、AI 表情包、AI 配音、AI 海报——战略动员内容一站生成。</p>
@@ -491,6 +503,7 @@ strong{font-weight:700}
   <!-- 7 问答 调查研究 -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">AI 实践</span><span class="dots"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i></span></div>
       <div class="eyebrow">01 · 问答 — 调查研究</div>
       <h2 class="ph">调研能力 <span class="hl">逐年跃迁</span></h2>
       <p class="ps">借助 AI 持续提效（eg：多视角观点碰撞、快速 &amp; 科学收敛），把更多时间精力释放在调研一线。</p>
@@ -516,6 +529,7 @@ strong{font-weight:700}
   <!-- 8 Skill PHAS rebuilt -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">AI 实践</span><span class="dots"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i></span></div>
       <div class="eyebrow">02 · Skill — 绩效健康度</div>
       <h2 class="ph" style="margin:.1em 0 .25em">案例：<span class="hl">PHAS</span> 个人报告</h2>
       <p class="ps" style="margin-bottom:.6em">场景非常多（周报、个人定制报告等）。以绩效健康度为例，点击图片可放大。</p>
@@ -563,6 +577,7 @@ strong{font-weight:700}
   <!-- 9 Vibe Coding 建站 -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">AI 实践</span><span class="dots"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i></span></div>
       <div class="eyebrow">03 · Vibe Coding — 生成网站</div>
       <h2 class="ph">「编程小白」也能做出<span class="hl">真正的网页</span></h2>
       <p class="ps">工具：Codex × Python × VS Code × DeepSeek。从想法到上线，四步完成。</p>
@@ -590,6 +605,7 @@ strong{font-weight:700}
   <!-- 10 Vibe Coding 本地检索 + screenshots -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">AI 实践</span><span class="dots"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i></span></div>
       <div class="eyebrow">03 · Vibe Coding — 本地智能检索</div>
       <h2 class="ph">面对 <span class="hl">13G</span> 超额材料</h2>
       <p class="ps">工具：Codex × Python。部署在本地 / 办公室内网的智能问答小程序。</p>
@@ -618,6 +634,7 @@ strong{font-weight:700}
   <!-- 11 evaluations -->
   <section class="slide">
     <div class="inner">
+      <div class="seclabel"><span class="chip">我这个人</span><span class="dots"><i class=""></i><i class=""></i><i class=""></i><i class="on"></i></span></div>
       <div class="eyebrow">关于我这个人</div>
       <h2 class="ph">别人常说的，和我自己知道的</h2>
       <div class="eval">
